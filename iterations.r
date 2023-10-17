@@ -64,6 +64,38 @@ stations_metadata_df %>%
   geom_line() + 
   theme_classic()
 
+###Making the plot prettier
 
+# Assuming station_name is the name of the traffic station, fetch it:
+station_name <- stations_metadata_df %>% 
+  filter(latestData > Sys.Date() - days(7)) %>% 
+  pull(name)  # replace 'name' with the appropriate column name for station name
+
+# Your plotting code with modifications:
+stations_metadata_df %>% 
+  filter(latestData > Sys.Date() - days(7)) %>% 
+  sample_n(1) %$% 
+  vol_qry(
+    id = id,
+    from = to_iso8601(latestData, -4),
+    to = to_iso8601(latestData, 0)
+  ) %>% 
+  GQL(., .url = configs$vegvesen_url) %>%
+  transform_volumes() %>% 
+  ggplot(aes(x=from, y=volume)) + 
+  geom_line(color = "steelblue", size = 1.2) +  # Adjusting color and line thickness
+  labs(
+    title = "Traffic Volume Over Time",
+    subtitle = station_name,
+    y = "Volume",
+    x = "Date"
+  ) + 
+  theme_classic() +
+  theme(
+    plot.title = element_text(face="bold", hjust=0.5),
+    plot.subtitle = element_text(hjust=0.5),
+    panel.grid.major = element_line(colour = "#d3d3d3"),  # Lightening the grid
+    panel.grid.minor = element_line(colour = "#d3d3d3")
+  )
 
 
