@@ -40,5 +40,24 @@ to_iso8601 <- function(datetime, offset_days) {
   return(iso_str)
 }
 
-#Json to API
+#API to dataframe
 
+transform_volumes <- function(api_response) {
+  # Extract relevant data from the response
+  data_list <- api_response$trafficData$volume$byHour$edges
+  
+  # Create an empty dataframe to store the results
+  df <- data.frame(from = character(0), to = character(0), volume = numeric(0))
+  
+  # Loop through each node in the response to extract data
+  for(node in data_list) {
+    df <- rbind(df, data.frame(
+      from = as.POSIXct(node$node$from, format = "%Y-%m-%dT%H:%M:%OS"),
+      to = as.POSIXct(node$node$to, format = "%Y-%m-%dT%H:%M:%OS"),
+      volume = node$node$total$volumeNumbers$volume
+    ))
+  }
+  
+  # Return the dataframe
+  return(df)
+}
