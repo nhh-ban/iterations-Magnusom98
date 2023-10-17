@@ -40,7 +40,7 @@ to_iso8601 <- function(datetime, offset_days) {
   return(iso_str)
 }
 
-#API to dataframe
+#API to data frame
 
 transform_volumes <- function(api_response) {
   # Extract relevant data from the response
@@ -58,6 +58,6 @@ transform_volumes <- function(api_response) {
     ))
   }
   
-  # Return the dataframe
+  # Return the data frame
   return(df)
 }
