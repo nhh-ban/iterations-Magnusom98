@@ -30,12 +30,15 @@ transform_metadata_to_df <- function(stations_metadata) {
 
 to_iso8601 <- function(datetime, offset_days) {
   # Convert to POSIXct in case the input is in character format
-  datetime <- anytime(datetime)
+  datetime <- anytime::anytime(datetime)
   
   # Add the offset in days
-  new_datetime <- datetime + days(offset_days)
+  new_datetime <- datetime + lubridate::days(offset_days)
   
-  # Convert to ISO8601 format and append 'Z'
-  iso_str <- format_ISO8601(new_datetime, usetz = TRUE)
-  return(paste0(substr(iso_str, 1, nchar(iso_str) - 6), "Z")) # Removing timezone part and appending 'Z'
+  # Convert to ISO8601 format with two-digit seconds and append 'Z'
+  iso_str <- format(new_datetime, format="%Y-%m-%dT%H:%M:%SZ")
+  return(iso_str)
 }
+
+#Json to API
+
